@@ -1,6 +1,7 @@
 import time
 import logging
 from simple_telegram_bot.bot import Bot
+from simple_telegram_bot.db import DataBase
 from telegram.error import NetworkError, Unauthorized
 
 try:
@@ -10,20 +11,24 @@ except:
     api_token = '' #Please provide a valid telegram API token
     assert api_token, 'Whoops! Please provide an api_token.'
 
-#functions
-def handle_updates(bot):
+db_init_string = 'CREATE TABLE IF NOT EXISTS users(id INTEGER)'
+
+#editable functions
+def handle_updates(bot, db):
     '''Gets updates from bot and replies the users with the same text they sent.'''
     ls_updates = bot.get_updates()
     for tup in ls_updates:
         id, text = tup
+        add_id_to_db(id, db)
         bot.send_text(id, text)
-        
-#main
+
+#core
 def main():
+    db = DataBase(db_init_string)
     bot = Bot(api_token)
     while 1:
         try:
-            handle_updates(bot)
+            handle_updates(bot, db)
         except NetworkError:
             time.sleep(1)
         except Unauthorized:
@@ -31,6 +36,17 @@ def main():
         except Exception as e:
             logger.error(f'Exception {str(e)}')
             time.sleep(1)
+
+def add_id_to_db(id, db):
+    '''Adds id to db if it is new
+    Args:
+        id (int) - telegram id of user
+        db (DataBase) - DataBase object
+    '''
+    ls_rows = db.get_ls_rows()
+    if id not in [x[0] for x in ls_rows]:
+        db.insert_id(id)
+        logger.info(f'New user {id} added.')
 
 if __name__ == '__main__':
     #logging

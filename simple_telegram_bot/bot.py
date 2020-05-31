@@ -6,7 +6,7 @@ logger = logging.getLogger('simple_telegram_bot.bot')
 
 class Bot:
     def __init__(self, api_token):
-        '''Initilizes bot object with attributes:
+        '''Initilizes Bot object with attributes:
             api_token (str)
             bot (telegram.Bot)
             update_id (int)            
