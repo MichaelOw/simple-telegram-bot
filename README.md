@@ -1,5 +1,9 @@
 # simple_telegram_bot
-This bot is currently setup to mirror user messages! Feel free to edit the code to generate customized responses.
+This bot is currently setup to:
+* Mirror user messages
+* Store new telegram IDs into a local sqlite3 database
+
+Feel free to edit the code to generate customized responses!
 
 Step 1: Load Telegram API Token
 -
