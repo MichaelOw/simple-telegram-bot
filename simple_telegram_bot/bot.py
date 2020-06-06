@@ -1,3 +1,4 @@
+import time
 import logging
 import telegram
 from telegram.error import NetworkError, Unauthorized
