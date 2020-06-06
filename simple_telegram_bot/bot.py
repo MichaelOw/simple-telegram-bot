@@ -18,12 +18,24 @@ class Bot:
             self.update_id = self.bot.get_updates()[0].update_id
         except IndexError:
             self.update_id = None
+        self.dt_last_message_id = {}
         logger.info('Bot loaded!')
         
-    def send_text(self, id, text):
-        '''Sends text to telegram id'''
+    def send_text(self, id, text, delete_last=0):
+        '''Does the following:
+            1. Sends text to telegram id
+            2. If delete_last is True, bot will try to delete the last message it sent 
+            3. Records message_id of the sent message in self.dt_last_message_id
+        Args:
+            id (int)
+            text (str)
+        '''
+        if delete_last:
+            last_message_id = self.dt_last_message_id.get(id)
+            if last_message_id: message = self.bot.delete_message(chat_id=id, message_id=last_message_id)
         self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #user will see 'bot is typing...' indicator
-        self.bot.send_message(chat_id=id, text=text, parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=1)
+        message = self.bot.send_message(chat_id=id, text=text, parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=1)
+        self.dt_last_message_id[id] = message.message_id
         logger.info(f'Message sent. (id: {id}, text: {text})')
 
     def get_updates(self):
