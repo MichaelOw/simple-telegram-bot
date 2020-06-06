@@ -14,7 +14,10 @@ class Bot:
         logger.info('Loading bot...')
         self.api_token = api_token
         self.bot = self.get_bot()
-        self.update_id = self.get_update_id()
+        try:
+            self.update_id = self.bot.get_updates()[0].update_id
+        except IndexError:
+            self.update_id = None
         logger.info('Bot loaded!')
         
     def send_text(self, id, text):
@@ -41,16 +44,6 @@ class Bot:
                 logger.info(f'Message recieved. (id: {m.chat_id}, text: {m.text})')
                 ls_updates.append((m.chat_id, m.text))
         return ls_updates
-
-    def get_update_id(self):
-        '''Returns update_id from Bot object
-            update_id (int)
-        '''
-        try:
-            update_id = self.bot.get_updates()[0].update_id
-            return update_id
-        except IndexError:
-            return None
   
     def get_bot(self):
         '''Returns telegram.Bot object with self.api_token
