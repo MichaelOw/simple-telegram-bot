@@ -4,14 +4,7 @@ from simple_telegram_bot.bot import Bot
 from simple_telegram_bot.db import DataBase
 from telegram.error import NetworkError, Unauthorized
 
-try:
-    with open ('api_token.txt', 'r') as f:
-        api_token = f.readline()
-except:
-    api_token = '' #Please provide a valid telegram API token
-    assert api_token, 'Whoops! Please provide an api_token.'
-
-db_init_string = 'CREATE TABLE IF NOT EXISTS users(id INTEGER)'
+api_token = '' #enter your api token
 
 #editable functions
 def handle_updates(bot, db):
@@ -24,7 +17,10 @@ def handle_updates(bot, db):
 
 #core
 def main():
+    global api_token
+    db_init_string = 'CREATE TABLE IF NOT EXISTS users(id INTEGER)'
     db = DataBase(db_init_string)
+    if not api_token: api_token = get_api_token()
     bot = Bot(api_token)
     while 1:
         try:
@@ -47,6 +43,14 @@ def add_id_to_db(id, db):
     if id not in [x[0] for x in ls_rows]:
         db.insert_id(id)
         logger.info(f'New user {id} added.')
+
+def get_api_token():
+    try:
+        with open ('api_token.txt', 'r') as f:
+            api_token = f.readline()
+        return api_token
+    except:
+        assert api_token, 'Whoops! Please provide an api_token.'
 
 if __name__ == '__main__':
     #logging

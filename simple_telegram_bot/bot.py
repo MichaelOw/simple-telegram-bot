@@ -68,5 +68,5 @@ class Bot:
             except Exception as e:
                 logger.error('exception: ', str(e))
                 time.sleep(2)
-                return self.get_bot(self.api_token) #recursive call
+                return self.get_bot() #recursive call
                 
