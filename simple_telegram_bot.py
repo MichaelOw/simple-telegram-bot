@@ -13,13 +13,15 @@ def handle_updates(bot, db):
     for tup in ls_updates:
         id, text = tup
         add_id_to_db(id, db)
+        db.execute('INSERT INTO texts(id, text) VALUES(?, ?)', (id, text))
         bot.send_text(id, text)
 
 #core
 def main():
     global api_token
-    db_init_string = 'CREATE TABLE IF NOT EXISTS users(id INTEGER)'
-    db = DataBase(db_init_string)
+    ls_db_init_str = ['CREATE TABLE IF NOT EXISTS users(id INTEGER)'
+                        ,'CREATE TABLE IF NOT EXISTS texts(id INTEGER, text TEXT)']
+    db = DataBase(ls_db_init_str)
     if not api_token: api_token = get_api_token()
     bot = Bot(api_token)
     while 1:
@@ -39,9 +41,9 @@ def add_id_to_db(id, db):
         id (int) - telegram id of user
         db (DataBase) - DataBase object
     '''
-    ls_rows = db.get_ls_rows()
+    ls_rows = db.get_ls_rows('SELECT * FROM users')
     if id not in [x[0] for x in ls_rows]:
-        db.insert_id(id)
+        db.execute('INSERT INTO users(id) VALUES(?)', (id,))
         logger.info(f'New user {id} added.')
 
 def get_api_token():

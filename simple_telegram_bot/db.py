@@ -3,40 +3,46 @@ import sqlite3
 logger = logging.getLogger('simple_telegram_bot.db')
 
 class DataBase:
-    def __init__(self, db_init_string):
+    def __init__(self, ls_db_init_str):
         '''Initilizes DataBase object with attributes:
-            conn
+        Args:
+            ls_db_init_str (List): List of init strings
         '''
         logger.info('Loading db...')
         self.conn = sqlite3.connect('db.db')
         c = self.conn.cursor()
-        c.execute(db_init_string)
+        for db_init_str in ls_db_init_str:
+            c.execute(db_init_str)
         logger.info('db loaded!')
 
-    def insert_id(self, id):
-        '''Inserts new id into DataBase object'''
+    def execute(self, query, input_tuple = None):
+        '''Executes query, uses input_tuple if given
+        Args:
+            query (str): SQLite query
+            input_tuple (Tuple): input parameters for the query if required
+        '''
         c = self.conn.cursor()
-        c.execute(
-            '''
-            INSERT INTO users(id)
-            VALUES(?)
-            '''
-            ,(id,)
-        )
+        if input_tuple:
+            c.execute(query, input_tuple)
+        else:
+            c.execute(query)
         self.conn.commit()
-        
-    def get_ls_rows(self):
-        '''Returns list of tuples
-            1. id (int) - id of user
+
+    def get_ls_rows(self, query, input_tuple = None):
+        '''Executes query, uses input_tuple if given, returns rows fetched
+        Args:
+            query (str): SQLite query
+            input_tuple (Tuple): input parameters for the query if required
+        Returns:
+            ls_rows (List):
+                tup (Tuple)
         '''
         ls_rows = []
         c = self.conn.cursor()
-        c.execute(
-            '''
-            SELECT *
-            FROM users
-            '''
-        )  
+        if input_tuple:
+            c.execute(query, input_tuple)
+        else:
+            c.execute(query)
         for row in c.fetchall():
             ls_rows.append(row)
         return ls_rows
