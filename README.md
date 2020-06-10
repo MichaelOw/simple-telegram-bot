@@ -1,7 +1,8 @@
 # simple_telegram_bot
 This bot is currently setup to:
 * Mirror user messages
-* Store new telegram IDs into a local sqlite3 database
+* Store telegram IDs into a local sqlite3 database
+* Store all recieved texts into a local sqlite3 database
 
 Feel free to edit the code to generate customized responses!
 
