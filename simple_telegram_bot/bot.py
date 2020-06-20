@@ -8,13 +8,12 @@ logger = logging.getLogger('root')
 class Bot:
     def __init__(self, api_token):
         '''Initilizes Bot object with attributes:
-            api_token (str)
             bot (telegram.Bot)
-            update_id (int)            
+            update_id (int)
+            dt_last_message_id (Dictionary): {id: last_message_id}
         '''
         logger.info('Loading bot...')
-        self.api_token = api_token
-        self.bot = self.get_bot()
+        self.bot = self.get_bot(api_token)
         try:
             self.update_id = self.bot.get_updates()[0].update_id
         except IndexError:
@@ -22,22 +21,53 @@ class Bot:
         self.dt_last_message_id = {}
         logger.info('Bot loaded!')
         
-    def send_text(self, id, text, delete_last=0):
+    def send_text(self, id, text):
         '''Does the following:
-            1. Sends text to telegram id
-            2. If delete_last is True, bot will try to delete the last message it sent 
-            3. Records message_id of the sent message in self.dt_last_message_id
+            - Sends text to telegram id
+            - Records message_id of the sent message in self.dt_last_message_id
+            - Returns message_id of the message sent
         Args:
             id (int)
             text (str)
+        Returns:
+            message_id (int)
         '''
-        if delete_last:
-            last_message_id = self.dt_last_message_id.get(id)
-            if last_message_id: message = self.bot.delete_message(chat_id=id, message_id=last_message_id)
-        self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #user will see 'bot is typing...' indicator
+        self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #'xxx is typing...' indicator
         message = self.bot.send_message(chat_id=id, text=text, parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=1)
         self.dt_last_message_id[id] = message.message_id
-        logger.info(f'Message sent. (id: {id}, text: {text})')
+        logger.info(f'Text message sent. (id: {id}, text: {text})')
+        return message.message_id
+
+    def send_photo(self, id, f, caption=None):
+        '''Sends image to id. Returns message_id of the message sent.
+        Args:
+            id (int)
+            f (str): File name of image file
+            caption (str)
+        Returns:
+            message_id (int)
+        '''
+        self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #'xxx is typing...' indicator
+        message = self.bot.send_photo(chat_id=id, photo=open(f,'rb'), caption = caption)
+        self.dt_last_message_id[id] = message.message_id
+        logger.info(f'Photo message sent. (id: {id}, f: {f}, caption: {caption})')
+        return message.message_id
+        
+    def delete_message(self, id, message_id=None):
+        '''Deletes message to user with input message_id.
+        If no message_id input, tries to delete last message.
+        Args:
+            id (int)
+            message_id (int)
+        '''
+        if message_id:
+            self.bot.delete_message(chat_id=id, message_id=message_id)
+        else:
+            last_message_id = self.dt_last_message_id.get(id)
+            if last_message_id:
+                self.bot.delete_message(chat_id=id, message_id=last_message_id)
+            else:
+                logger.info('Last message not found.')
 
     def get_updates(self):
         '''Returns list of tuples:
@@ -58,15 +88,15 @@ class Bot:
                 ls_updates.append((m.chat_id, m.text))
         return ls_updates
   
-    def get_bot(self):
-        '''Returns telegram.Bot object with self.api_token
+    def get_bot(self, api_token):
+        '''Returns telegram.Bot object with api_token
         '''
         while 1:
             try:
-                bot = telegram.Bot(self.api_token)
+                bot = telegram.Bot(api_token)
                 return bot
             except Exception as e:
                 logger.error('exception: ', str(e))
                 time.sleep(2)
-                return self.get_bot() #recursive call
+                return self.get_bot(api_token) #recursive call
                 

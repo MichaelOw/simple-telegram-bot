@@ -3,3 +3,4 @@ zRun.bat
 api_token.txt
 db.db
 venv
+simple_telegram_bot\__pycache__
