@@ -15,6 +15,7 @@ def handle_updates(bot, db):
         add_id_to_db(id, db)
         db.execute('INSERT INTO texts(id, text) VALUES(?, ?)', (id, text))
         bot.send_text(id, text)
+        if text.lower()=='winrar': bot.send_photo(id, 'winrar.jpg')
 
 #core
 def main():
@@ -41,7 +42,7 @@ def add_id_to_db(id, db):
         id (int) - telegram id of user
         db (DataBase) - DataBase object
     '''
-    ls_rows = db.get_ls_rows('SELECT * FROM users')
+    ls_rows = db.get_ls_rows('SELECT id FROM users WHERE id=(?)', (id,))
     if id not in [x[0] for x in ls_rows]:
         db.execute('INSERT INTO users(id) VALUES(?)', (id,))
         logger.info(f'New user {id} added.')
