@@ -3,6 +3,7 @@ This bot is currently setup to:
 * Mirror user messages
 * Store telegram IDs into a local sqlite3 database
 * Store all recieved texts into a local sqlite3 database
+* Send an image when message 'winrar' is received
 
 Feel free to edit the code to generate customized responses!
 
