@@ -56,14 +56,14 @@ def get_api_token():
 
 if __name__ == '__main__':
     #logging
-    logger = logging.getLogger('simple_telegram_bot')
+    logger = logging.getLogger('root')
     logger.setLevel(logging.INFO)
     c_handler = logging.StreamHandler() #stream log
     c_handler.setLevel(logging.INFO)
     c_handler.setFormatter(logging.Formatter('%(message)s'))
     logger.addHandler(c_handler)
     f_handler = logging.FileHandler('log.log') #file log
-    f_handler.setLevel(logging.ERROR)
+    f_handler.setLevel(logging.INFO)
     f_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s [%(module)s]: %(message)s'))
     logger.addHandler(f_handler)
     #main

@@ -3,7 +3,7 @@ import logging
 import telegram
 from telegram.error import NetworkError, Unauthorized
 
-logger = logging.getLogger('simple_telegram_bot.bot')
+logger = logging.getLogger('root')
 
 class Bot:
     def __init__(self, api_token):

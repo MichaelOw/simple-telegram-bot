@@ -1,6 +1,6 @@
 import logging
 import sqlite3
-logger = logging.getLogger('simple_telegram_bot.db')
+logger = logging.getLogger('root')
 
 class DataBase:
     def __init__(self, ls_db_init_str):
