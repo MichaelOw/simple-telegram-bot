@@ -84,7 +84,7 @@ class Bot:
             else:
                 m = None
             if m:
-                logger.info(f'Message recieved. (id: {m.chat_id}, text: {m.text})')
+                logger.info(f'Message recieved. (id: {m.chat_id}, text: {m.text} ({m.text.encode("raw_unicode_escape")}))')
                 ls_updates.append((m.chat_id, m.text))
         return ls_updates
   

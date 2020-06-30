@@ -63,8 +63,8 @@ if __name__ == '__main__':
     c_handler.setLevel(logging.INFO)
     c_handler.setFormatter(logging.Formatter('%(message)s'))
     logger.addHandler(c_handler)
-    f_handler = logging.FileHandler('log.log') #file log
-    f_handler.setLevel(logging.INFO)
+    f_handler = logging.FileHandler('log.log', 'w', 'utf-8') #file log
+    f_handler.setLevel(logging.ERROR)
     f_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s [%(module)s]: %(message)s'))
     logger.addHandler(f_handler)
     #main
