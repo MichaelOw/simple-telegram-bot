@@ -35,7 +35,7 @@ class Bot:
         self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #'xxx is typing...' indicator
         message = self.bot.send_message(chat_id=id, text=text, parse_mode=telegram.ParseMode.HTML, disable_web_page_preview=1)
         self.dt_last_message_id[id] = message.message_id
-        logger.info(f'Text message sent. (id: {id}, text: {text})')
+        logger.debug(f'Text message sent. (id: {id}, text: {text})')
         return message.message_id
 
     def send_photo(self, id, f, caption=None):
@@ -50,7 +50,7 @@ class Bot:
         self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #'xxx is typing...' indicator
         message = self.bot.send_photo(chat_id=id, photo=open(f,'rb'), caption = caption)
         self.dt_last_message_id[id] = message.message_id
-        logger.info(f'Photo message sent. (id: {id}, f: {f}, caption: {caption})')
+        logger.debug(f'Photo message sent. (id: {id}, f: {f}, caption: {caption})')
         return message.message_id
         
     def delete_message(self, id, message_id=None):
@@ -67,7 +67,7 @@ class Bot:
             if last_message_id:
                 self.bot.delete_message(chat_id=id, message_id=last_message_id)
             else:
-                logger.info('Last message not found.')
+                logger.debug('Last message not found.')
 
     def get_updates(self):
         '''Returns list of tuples:
@@ -84,7 +84,7 @@ class Bot:
             else:
                 m = None
             if m:
-                logger.info(f'Message recieved. (id: {m.chat_id}, text: {m.text} ({m.text.encode("raw_unicode_escape")}))')
+                logger.debug(f'Message recieved. (id: {m.chat_id}, text: {m.text} ({m.text.encode("raw_unicode_escape")}))')
                 ls_updates.append((m.chat_id, m.text))
         return ls_updates
   
