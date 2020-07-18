@@ -3,13 +3,13 @@ import sqlite3
 logger = logging.getLogger('root')
 
 class DataBase:
-    def __init__(self, ls_db_init_str):
+    def __init__(self, ls_db_init_str, dir_db =''):
         '''Initilizes DataBase object with attributes:
         Args:
             ls_db_init_str (List): List of init strings
         '''
         logger.info('Loading db...')
-        self.conn = sqlite3.connect('db.db')
+        self.conn = sqlite3.connect(dir_db + 'db.db')
         c = self.conn.cursor()
         for db_init_str in ls_db_init_str:
             c.execute(db_init_str)
