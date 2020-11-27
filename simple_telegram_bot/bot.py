@@ -50,9 +50,24 @@ class Bot:
         self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #'xxx is typing...' indicator
         message = self.bot.send_photo(chat_id=id, photo=open(f,'rb'), caption = caption)
         self.dt_last_message_id[id] = message.message_id
-        logger.debug(f'Photo message sent. (id: {id}, f: {f}, caption: {caption})')
+        logger.debug(f'Photo sent. (id: {id}, f: {f}, caption: {caption})')
         return message.message_id
-        
+
+    def send_file(self, id, f, caption=None):
+        '''Sends document to id. Returns message_id of the message sent.
+        Args:
+            id (int)
+            f (str): File name
+            caption (str)
+        Returns:
+            message_id (int)
+        '''
+        self.bot.send_chat_action(chat_id=id, action=telegram.ChatAction.TYPING) #'xxx is typing...' indicator
+        message = self.bot.send_document(chat_id=id, document=open(f,'rb'), caption = caption)
+        self.dt_last_message_id[id] = message.message_id
+        logger.debug(f'Document sent. (id: {id}, f: {f}, caption: {caption})')
+        return message.message_id
+
     def delete_message(self, id, message_id=None):
         '''Deletes message to user with input message_id.
         If no message_id input, tries to delete last message.

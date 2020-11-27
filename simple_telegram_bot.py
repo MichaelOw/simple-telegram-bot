@@ -1,3 +1,4 @@
+import os
 import time
 import logging
 from simple_telegram_bot.bot import Bot
@@ -9,13 +10,16 @@ api_token = '' #enter your api token
 #editable functions
 def handle_updates(bot, db):
     '''Gets updates from bot and replies the users with the same text they sent.'''
+    dir_sample = os.getcwd() + '\\data\\'
     ls_updates = bot.get_updates()
     for tup in ls_updates:
         id, text = tup
         add_id_to_db(id, db)
         db.execute('INSERT INTO texts(id, text) VALUES(?, ?)', (id, text))
         bot.send_text(id, text)
-        if text.lower()=='winrar': bot.send_photo(id, 'winrar.jpg')
+        if text.lower()=='help': bot.send_text(id, 'try "winrar" and "books"')
+        if text.lower()=='winrar': bot.send_photo(id, dir_sample+'winrar.jpg')
+        if text.lower()=='books': bot.send_file(id, dir_sample+'books.csv')
 
 #core
 def main():
