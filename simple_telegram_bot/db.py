@@ -47,3 +47,7 @@ class DataBase:
         for row in c.fetchall():
             ls_rows.append(row)
         return ls_rows
+
+    def close_connection(self):
+        '''Closes connection'''
+        self.conn.close()
