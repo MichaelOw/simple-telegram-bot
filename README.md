@@ -1,4 +1,5 @@
 # simple_telegram_bot
+This is a basic Telegram Bot template that I use for my projects.  
 This bot is currently setup to:
 * Mirror user messages
 * Store telegram IDs into a local sqlite3 database
