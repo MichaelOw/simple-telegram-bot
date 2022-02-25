@@ -5,9 +5,10 @@ from simple_telegram_bot.bot import Bot
 from simple_telegram_bot.db import DataBase
 from telegram.error import NetworkError, Unauthorized
 
-api_token = '' #enter your api token
+api_token = '' # ENTER YOUR API TOKEN
+dir_db = os.path.join(os.getcwd(), 'data')
 
-#editable functions
+# EDITABLE FUNCTION
 def handle_updates(bot, db):
     '''Gets updates from bot and replies the users with the same text they sent.'''
     dir_sample = os.getcwd() + '\\data\\'
@@ -21,14 +22,20 @@ def handle_updates(bot, db):
         if text.lower()=='winrar': bot.send_photo(id, dir_sample+'winrar.jpg')
         if text.lower()=='books': bot.send_file(id, dir_sample+'books.csv')
 
-#core
+# CORE
 def main():
+    # SET UP BOT
     global api_token
-    ls_db_init_str = ['CREATE TABLE IF NOT EXISTS users(id INTEGER)'
-                        ,'CREATE TABLE IF NOT EXISTS texts(id INTEGER, text TEXT)']
-    db = DataBase(ls_db_init_str)
     if not api_token: api_token = get_api_token()
     bot = Bot(api_token)
+    # SET UP DB
+    global dir_db
+    init_query = '''
+        CREATE TABLE IF NOT EXISTS users(id INTEGER)
+        ;CREATE TABLE IF NOT EXISTS texts(id INTEGER, text TEXT)
+    '''
+    db = DataBase(dir_db, init_query)
+    # RUN BOT
     while 1:
         try:
             handle_updates(bot, db)
@@ -60,16 +67,15 @@ def get_api_token():
         assert api_token, 'Whoops! Please provide an api_token.'
 
 if __name__ == '__main__':
-    #logging
+    # SET UP LOGGING
     logger = logging.getLogger('root')
     logger.setLevel(logging.INFO)
-    c_handler = logging.StreamHandler() #stream log
+    c_handler = logging.StreamHandler() # STREAM LOG
     c_handler.setLevel(logging.INFO)
     c_handler.setFormatter(logging.Formatter('%(message)s'))
     logger.addHandler(c_handler)
-    f_handler = logging.FileHandler('log.log', 'w', 'utf-8') #file log
+    f_handler = logging.FileHandler('log.log', 'w', 'utf-8') # FILE LOG
     f_handler.setLevel(logging.ERROR)
     f_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s [%(module)s]: %(message)s'))
     logger.addHandler(f_handler)
-    #main
     main()

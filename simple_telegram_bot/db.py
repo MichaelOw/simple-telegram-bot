@@ -4,17 +4,18 @@ import sqlite3
 logger = logging.getLogger('root')
 
 class DataBase:
-    def __init__(self, ls_db_init_str=[], dir_db =''):
+    def __init__(self, dir_db, init_query = None):
         '''Initilizes DataBase object with attributes:
         Args:
             ls_db_init_str (List): List of init strings (Optional)
             dir_db (str): Directory the database is in (Optional) e.g. 'D:\\Program Files\\simple_telegram_bot\\'
         '''
+        assert dir_db, 'Please provide a valid directory...'
         logger.info('Loading db...')
         self.conn = sqlite3.connect(os.path.join(dir_db, 'db.db'))
         c = self.conn.cursor()
-        for db_init_str in ls_db_init_str:
-            c.execute(db_init_str)
+        if init_query:
+            c.executescript(init_query)
         logger.info('db loaded!')
 
     def execute(self, query, input_tuple = None):
@@ -23,11 +24,12 @@ class DataBase:
             query (str): SQLite query
             input_tuple (Tuple): input parameters for the query if required
         '''
+        assert query
         c = self.conn.cursor()
         if input_tuple:
             c.execute(query, input_tuple)
         else:
-            c.execute(query)
+            c.executescript(query)
         self.conn.commit()
 
     def get_ls_rows(self, query, input_tuple = None):
@@ -49,6 +51,6 @@ class DataBase:
             ls_rows.append(row)
         return ls_rows
 
-    def close_connection(self):
+    def close(self):
         '''Closes connection'''
         self.conn.close()
