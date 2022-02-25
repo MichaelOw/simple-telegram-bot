@@ -1,5 +1,6 @@
 log.log
 zRun.bat
+z_run_simple_telegram_bot.bat
 api_token.txt
 db.db
 venv
